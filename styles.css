@@ -8,7 +8,7 @@ body, html {
 
 #app {
     height: 100%;
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -24,14 +24,23 @@ h1 {
 
 .section {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-input, button {
+input, button, textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
 }
 
 button {
@@ -49,15 +58,25 @@ button:hover {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
     padding: 20px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.flashcard-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
 }
 
 .flashcard {
     width: 100%;
     height: 100%;
-    max-height: calc(100vh - 250px);
+    max-width: 1000px;
+    max-height: 800px;
     perspective: 1000px;
 }
 
@@ -116,20 +135,41 @@ button:hover {
 }
 
 .flashcard-content li {
+    margin-top: 15px;
     margin-bottom: 10px;
 }
 
 .flashcard-options {
-    display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 5px;
     width: 100%;
 }
 
 .flashcard-options button {
-    width: 30%;
+	justify-content: space-between;
+	height: 60px;
+    width: 32%;
+}
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    margin-top: 20px;
+    overflow: hidden;
 }
 
+#progress-bar-fill {
+    height: 100%;
+    background-color: #4caf50;
+    transition: width 0.5s ease-in-out;
+}
+
+#progress-text {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: bold;
+}
 .edit-delete-options {
     display: flex;
     justify-content: flex-end;
@@ -139,17 +179,51 @@ button:hover {
 
 .edit-delete-options button {
     width: auto;
-    padding: 5px 10px;
+	height: auto;
+    padding: 10px 10px;
     margin-left: 10px;
     font-size: 12px;
 }
 
-@media (max-width: 600px) {
-    #app {
-        height: 100%;
+#main-menu button {
+    margin-bottom: 10px;
+}
+
+#create-form button,
+#edit-form button {
+    margin-right: 10px;
+}
+
+#flashcard-container button:last-child {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .flashcard {
+        max-height: 500px;
+    }
+	.flashcard-options {
+        flex-direction: column;
     }
 
+    .flashcard-options button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
     .flashcard {
-        max-height: calc(100vh - 200px);
+	max-width: 1000px;
+        max-height: 500px;
+    }
+
+    .flashcard-options {
+        flex-direction: column;
+    }
+
+    .flashcard-options button {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }

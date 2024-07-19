@@ -6,46 +6,57 @@
     <title>Flashcard App</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div id="app">
         <h1>Flashcard App</h1>
+
         <div id="api-key-input" class="section">
-            <input type="password" id="api-key" placeholder="Enter your restdb.io API key">
+            <input type="text" id="api-key" placeholder="Enter your API key">
             <button onclick="saveApiKey()">Save API Key</button>
         </div>
-        <div id="flashcard-controls" class="section" style="display:none;">
+
+        <div id="main-menu" class="section" style="display:none;">
             <button onclick="showCreateForm()">Create Flashcard</button>
             <button onclick="showAllFlashcards()">Study Flashcards</button>
+            <button onclick="updateFlashcards()">Update Flashcards</button>
         </div>
+
         <div id="create-form" class="section" style="display:none;">
-            <input type="text" id="question" placeholder="Question">
-            <input type="text" id="answer" placeholder="Answer">
+            <textarea id="question" placeholder="Enter question"></textarea>
+            <textarea id="answer" placeholder="Enter answer"></textarea>
             <button onclick="createFlashcard()">Save Flashcard</button>
+            <button onclick="showMainMenu()">Back to Main Menu</button>
         </div>
+
+        <div id="edit-form" class="section" style="display:none;">
+            <textarea id="edit-question" placeholder="Edit question"></textarea>
+            <textarea id="edit-answer" placeholder="Edit answer"></textarea>
+            <button onclick="saveEditedCard()">Save Changes</button>
+            <button onclick="showAllFlashcards()">Cancel</button>
+        </div>
+
         <div id="flashcard-container" class="section" style="display:none;">
-            <div class="flashcard">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">
-                        <p id="question-text"></p>
-                    </div>
-                    <div class="flashcard-back">
-                        <p id="answer-text"></p>
-                    </div>
-                </div>
-            </div>
-            <div class="flashcard-options">
-                <button onclick="previousCard()">Previous</button>
-                <button onclick="flipCard()">Show Answer</button>
-                <button onclick="nextCard()">Next</button>
-            </div>
-            <div class="edit-delete-options">
-                <button onclick="editCurrentCard()">Edit</button>
-                <button onclick="deleteCurrentCard()">Delete</button>
+    <div class="flashcard-wrapper">
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front" id="question-text"></div>
+                <div class="flashcard-back" id="answer-text"></div>
             </div>
         </div>
     </div>
+
+    <div class="flashcard-options">
+        <button onclick="previousCard()">Previous</button>
+        <button onclick="flipCard()">Show Answer</button>
+        <button onclick="nextCard()">Next</button>
+    </div>
+
+    <button onclick="showMainMenu()">Back to Main Menu</button>
+</div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
