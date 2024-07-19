@@ -10,7 +10,10 @@
 </head>
 <body>
     <div id="app">
+        <header>
+        <button id="back-button" onclick="showMainMenu()">Back</button>
         <h1>Flashcard App</h1>
+		</header>
 
         <div id="api-key-input" class="section">
             <input type="text" id="api-key" placeholder="Enter your API key">
@@ -18,9 +21,10 @@
         </div>
 
         <div id="main-menu" class="section" style="display:none;">
+            <button onclick="confirmUpdateFlashcards()">Update Flashcards</button>
             <button onclick="showCreateForm()">Create Flashcard</button>
             <button onclick="showAllFlashcards()">Study Flashcards</button>
-            <button onclick="updateFlashcards()">Update Flashcards</button>
+			<p id="last-update-time" style="color: grey;"></p>
         </div>
 
         <div id="create-form" class="section" style="display:none;">
@@ -51,9 +55,12 @@
         <button onclick="previousCard()">Previous</button>
         <button onclick="flipCard()">Show Answer</button>
         <button onclick="nextCard()">Next</button>
-    </div>
 
-    <button onclick="showMainMenu()">Back to Main Menu</button>
+    </div>
+	<div class="edit-delete-options">
+                <button onclick="editCurrentCard()">Edit</button>
+                <button onclick="deleteCurrentCard()">Delete</button>
+            </div>
 </div>
     </div>
 

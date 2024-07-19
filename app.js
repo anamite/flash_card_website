@@ -5,11 +5,14 @@ let currentCardIndex = 0;
 
 // Load flashcards from local storage on startup
 function loadCachedFlashcards() {
+	document.getElementById('back-button').style.display = 'none';
+
     const cachedCards = localStorage.getItem('cachedFlashcards');
     if (cachedCards) {
         flashcards = JSON.parse(cachedCards);
         showCard();
     }
+    displayLastUpdateTime();
 }
 
 // Save flashcards to local storage
@@ -61,9 +64,16 @@ function createFlashcard() {
 function showAllFlashcards() {
     currentCardIndex = 0;
     showCard();
+	document.getElementById('back-button').style.display = 'flex';
     document.getElementById('flashcard-container').style.display = 'flex';
     document.getElementById('create-form').style.display = 'none';
     document.getElementById('main-menu').style.display = 'none';
+}
+
+function confirmUpdateFlashcards() {
+    if (confirm('Are you sure you want to update flashcards?')) {
+        updateFlashcards();
+    }
 }
 
 function updateFlashcards() {
@@ -83,9 +93,19 @@ function updateFlashcards() {
         currentCardIndex = 0;
         showCard();
         alert('Flashcards updated successfully!');
+        const now = new Date();
+        localStorage.setItem('lastUpdateTime', now.toString());
+        displayLastUpdateTime();
     }).fail(function(jqXHR, textStatus) {
         alert('Error updating flashcards: ' + textStatus);
     });
+}
+
+function displayLastUpdateTime() {
+    const lastUpdateTime = localStorage.getItem('lastUpdateTime');
+    if (lastUpdateTime) {
+        document.getElementById('last-update-time').textContent = `Last update: ${new Date(lastUpdateTime).toLocaleString()}`;
+    }
 }
 
 function showCard() {
@@ -97,7 +117,7 @@ function showCard() {
     document.getElementById('question-text').innerHTML = `<div class="flashcard-content"><p>${card.question}</p></div>`;
     document.getElementById('answer-text').innerHTML = `<div class="flashcard-content">${marked.parse(card.answer)}</div>`;
     document.querySelector('.flashcard').classList.remove('flipped');
-} 
+}
 
 function flipCard() {
     document.querySelector('.flashcard').classList.toggle('flipped');
@@ -181,6 +201,7 @@ function deleteCurrentCard() {
 }
 
 function showMainMenu() {
+	document.getElementById('back-button').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
     document.getElementById('flashcard-container').style.display = 'none';
     document.getElementById('create-form').style.display = 'none';
