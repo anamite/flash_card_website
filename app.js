@@ -20,6 +20,31 @@ function cacheFlashcards() {
     localStorage.setItem('cachedFlashcards', JSON.stringify(flashcards));
 }
 
+function deleteAllData() {
+    if (confirm('Are you sure you want to delete all cached data? This action cannot be undone.')) {
+        // Clear all items from localStorage
+        localStorage.removeItem('cachedFlashcards');
+        localStorage.removeItem('apiKey');
+        localStorage.removeItem('lastUpdateTime');
+
+        // Reset variables
+        flashcards = [];
+        apiKey = null;
+        currentCardIndex = 0;
+
+        // Update the UI
+        document.getElementById('api-key-input').style.display = 'block';
+        document.getElementById('main-menu').style.display = 'none';
+        document.getElementById('flashcard-container').style.display = 'none';
+        document.getElementById('create-form').style.display = 'none';
+        document.getElementById('edit-form').style.display = 'none';
+        document.getElementById('api-key').value = '';
+        document.getElementById('last-update-time').textContent = '';
+
+        alert('All cached data has been deleted. You will need to enter your API key again to use the app.');
+    }
+}
+
 function saveApiKey() {
     const keyInput = document.getElementById('api-key');
     apiKey = keyInput.value;
@@ -110,7 +135,7 @@ function displayLastUpdateTime() {
 
 function showCard() {
     if (flashcards.length === 0) {
-        alert('No flashcards available. Create some first!');
+        alert('No flashcards available. Click "Download" to get the cards');
         return;
     }
     const card = flashcards[currentCardIndex];
@@ -118,19 +143,42 @@ function showCard() {
     document.getElementById('answer-text').innerHTML = `<div class="flashcard-content">${marked.parse(card.answer)}</div>`;
     document.querySelector('.flashcard').classList.remove('flipped');
 }
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        event.preventDefault(); // Prevent default space bar action (scrolling)
+        flipCard(); // Function to flip the card
+    } else if (event.code === 'ArrowLeft') {
+        event.preventDefault(); // Prevent default action if necessary
+        previousCard(); // Function to go to the previous card
+    } else if (event.code === 'ArrowRight') {
+        event.preventDefault(); // Prevent default action if necessary
+        nextCard(); // Function to go to the next card
+    }
+});
+
 
 function flipCard() {
     document.querySelector('.flashcard').classList.toggle('flipped');
 }
 
 function nextCard() {
-    currentCardIndex = (currentCardIndex + 1) % flashcards.length;
-    showCard();
+    const currentCard = document.querySelector('.flashcard');
+    currentCard.classList.add('slide-left');
+    setTimeout(() => {
+        currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+        showCard();
+        currentCard.classList.remove('slide-left');
+    }, 300);
 }
 
 function previousCard() {
-    currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
-    showCard();
+    const currentCard = document.querySelector('.flashcard');
+    currentCard.classList.add('slide-right');
+    setTimeout(() => {
+        currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+        showCard();
+        currentCard.classList.remove('slide-right');
+    }, 300);
 }
 
 function editCurrentCard() {
@@ -210,9 +258,11 @@ function showMainMenu() {
 
 // Check if API key exists and show appropriate view
 if (apiKey) {
+	document.getElementById('back-button').style.display = 'none';
     document.getElementById('api-key-input').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
     loadCachedFlashcards();
 } else {
+	document.getElementById('back-button').style.display = 'none';
     document.getElementById('api-key-input').style.display = 'block';
 }
