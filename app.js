@@ -2,6 +2,7 @@ const API_URL = 'https://flashcards-8886.restdb.io/rest/cards';
 let apiKey = localStorage.getItem('apiKey');
 let flashcards = [];
 let currentCardIndex = 0;
+let isStudyingImportant = false;
 
 // Load flashcards from local storage on startup
 function loadCachedFlashcards() {
@@ -132,16 +133,40 @@ function displayLastUpdateTime() {
         document.getElementById('last-update-time').textContent = `Last update: ${new Date(lastUpdateTime).toLocaleString()}`;
     }
 }
+function toggleImportant(event) {
+  event.stopPropagation();
+  const card = flashcards[currentCardIndex];
+  card.important = !card.important;
+  event.target.closest('.star-icon').classList.toggle('important');
+  cacheFlashcards();
+}
 
+function studyImportantCards() {
+  isStudyingImportant = true;
+  const importantCards = flashcards.filter(card => card.important);
+  if (importantCards.length === 0) {
+    alert('No important cards marked. Please mark some cards as important first.');
+    return;
+  }
+  flashcards = importantCards;
+  currentCardIndex = 0;
+  showAllFlashcards();
+}
 function showCard() {
-    if (flashcards.length === 0) {
-        alert('No flashcards available. Click "Download" to get the cards');
-        return;
-    }
-    const card = flashcards[currentCardIndex];
-    document.getElementById('question-text').innerHTML = `<div class="flashcard-content"><p>${card.question}</p></div>`;
-    document.getElementById('answer-text').innerHTML = `<div class="flashcard-content">${marked.parse(card.answer)}</div>`;
-    document.querySelector('.flashcard').classList.remove('flipped');
+  if (flashcards.length === 0) {
+    alert('No flashcards available. Click "Download" to get the cards');
+    return;
+  }
+  const card = flashcards[currentCardIndex];
+  document.getElementById('question-text').innerHTML = `
+    <div class="flashcard-content">
+      <svg class="star-icon ${card.important ? 'important' : ''}" onclick="toggleImportant(event)">
+        <use xlink:href="#icon-star"></use>
+      </svg>
+      <p>${card.question}</p>
+    </div>`;
+  document.getElementById('answer-text').innerHTML = `<div class="flashcard-content">${marked.parse(card.answer)}</div>`;
+  document.querySelector('.flashcard').classList.remove('flipped');
 }
 document.addEventListener('keydown', function(event) {
     if (event.code === 'Space') {
@@ -249,11 +274,17 @@ function deleteCurrentCard() {
 }
 
 function showMainMenu() {
-	document.getElementById('back-button').style.display = 'none';
-    document.getElementById('main-menu').style.display = 'block';
-    document.getElementById('flashcard-container').style.display = 'none';
-    document.getElementById('create-form').style.display = 'none';
-    document.getElementById('edit-form').style.display = 'none';
+  document.getElementById('back-button').style.display = 'none';
+  document.getElementById('main-menu').style.display = 'block';
+  document.getElementById('flashcard-container').style.display = 'none';
+  document.getElementById('create-form').style.display = 'none';
+  document.getElementById('edit-form').style.display = 'none';
+  
+  // Reset to all flashcards when returning to main menu
+  if (isStudyingImportant) {
+    isStudyingImportant = false;
+    loadCachedFlashcards();
+  }
 }
 
 // Check if API key exists and show appropriate view
